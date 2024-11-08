@@ -1,0 +1,6 @@
+Subject line (try to keep under 50 characters)
+
+Description of commit. Explain what and why.
+
+- Bullet points of changes
+- Another bullet point
