@@ -11,10 +11,8 @@ import google.auth.transport.requests
 
 app = Flask(__name__)
 
-# Secret key for session management
 app.secret_key = "HOMEGUARD_SECRET_KEY"
 
-# Google OAuth 2.0 setup
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
@@ -28,11 +26,10 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="https://homeguard.website/callback"
 )
 
-# Decorator to check if user is logged in
 def login_is_required(function):
     def wrapper(*args, **kwargs):
         if "google_id" not in session:
-            return abort(401)  # Authorization required
+            return abort(401)
         return function(*args, **kwargs)
     return wrapper
 
@@ -82,7 +79,7 @@ def callback():
         audience=GOOGLE_CLIENT_ID
     )
 
-    session["google_id"] = id_info.get("sub")  # Unique identifier
+    session["google_id"] = id_info.get("sub")  
     session["name"] = id_info.get("name")
     print(session["google_id"])
     print(session["name"])
