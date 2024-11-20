@@ -15,7 +15,9 @@ app = Flask(__name__)
 app.secret_key = "HOMEGUARD_SECRET_KEY"
 
 # Google OAuth 2.0 setup
-GOOGLE_CLIENT_ID = "772013039635-vqcfdha0v0084uar7vsv1ouiaas4anfe.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
 flow = Flow.from_client_secrets_file(
