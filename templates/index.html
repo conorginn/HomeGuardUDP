@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>HomeGuard Website</title>
 </head>
 <body>
-    <h1>Welcome to HomeGuard Website</h1>
-    {% if session.get('google_id') %}
-        <p>Hello, {{ session['name'] }}!</p>
-        <a href="{{ url_for('protected_area') }}">
-            <button type="button" class="login-with-google-btn">
-                Access Protected Area
-            </button>
-        </a>
-        <br>
-        <a href="{{ url_for('logout') }}">
-            <button type="button" class="login-with-google-btn">
-                Logout
-            </button>
-        </a>
-    {% else %}
-        <p>You are not logged in. Please log in to access additional features.</p>
-        <a href="{{ url_for('login') }}">
-            <button type="button" class="login-with-google-btn">
+   
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/HomeGuard.png') }}" alt="Logo" class="logo">
+    </div>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome To HomeGuard</h1>
+        </div>
+        {% if error %}
+            <script>
+                alert("Wrong username or password!");
+            </script>
+        {% endif %}
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <div class="signup-link">
+            <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+        </div>
+        <div>
+            <button type="button" class="login-with-google-btn" >
                 Sign in with Google
             </button>
-        </a>
-    {% endif %}
+        </div>
+    </div>
 </body>
 </html>
