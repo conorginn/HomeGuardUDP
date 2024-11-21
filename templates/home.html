@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+</head>
+<body>
+    <header>HomeGuard</header>
+
+    <div class="live-feed-container">
+        <img class="live-feed" src="https://via.placeholder.com/400x200" alt="Live Feed">
+        <div class="timestamp">12:45</div>
+        <div class="cam-label">CAM 1</div>
+    </div>
+
+    <div class="voice-control">
+        <button class="mic-button" onclick="toggleMicrophone()">🎤</button>
+        <div class="toggle-container">
+            <span>Voice Changer</span>
+            <div class="toggle"></div>
+        </div>
+        <span class="pre-recorded" onclick="openModal()">Pre-Recorded Messages</span>
+    </div>
+
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <h3>Select a Message</h3>
+            <ul>
+                <li>Hello, how can I help you?</li>
+                <li>Please leave the package at the door.</li>
+                <li>I’ll be there in a moment.</li>
+                <li>Who is it?</li>
+            </ul>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="/home" class="footer-icon">
+            <button>🏠</button>
+        </a>
+        <a href="/camera" class="footer-icon">
+            <button>📹</button>
+        </a>
+        <a href="/notifications" class="footer-icon">
+            <button>🔔</button>
+        </a>
+        <a href="/settings" class="footer-icon">
+            <button>⚙️</button>
+        </a>
+    </div>
+</body>
+</html>
