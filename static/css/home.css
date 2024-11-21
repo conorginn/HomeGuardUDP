@@ -1,0 +1,204 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    height: 100vh;
+}
+
+header {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.live-feed-container {
+    width: 90%;
+    max-width: 400px;
+    margin: 20px 0;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.live-feed {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
+
+.timestamp {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.cam-label {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.voice-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+
+}
+
+.mic-button {
+    width: 100px;
+    height: 100px;
+    background-color: #444;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    margin-bottom: 40px;
+    background-color: white;
+}
+
+.mic-button.pressed {
+    background-color: green;
+}
+
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle {
+    width: 50px;
+    height: 25px;
+    background: #ccc;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle::after {
+    content: '';
+    width: 23px;
+    height: 23px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: all 0.3s;
+}
+
+.toggle.active {
+    background: #007bff;
+}
+
+.toggle.active::after {
+    left: 26px;
+}
+
+.pre-recorded {
+    color: #007bff;
+    font-size: 14px;
+    margin-top: 30px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pre-recorded:hover {
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    color: white;
+}
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-content ul li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modal-content ul li:hover {
+    background-color: #555;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #222;
+    width: 100%;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+}
+
+.footer-icon {
+    text-decoration: none; 
+}
+
+.footer-icon button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+
