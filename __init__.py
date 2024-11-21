@@ -13,6 +13,11 @@ app = Flask(__name__)
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
 
+test_user = {
+    "username": "user1",
+    "password": "abc123"
+}
+
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 
@@ -28,38 +33,34 @@ flow = Flow.from_client_secrets_file(
 
 def login_is_required(function):
     def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)
+        if "user" not in session and "google_id" not in session:
+            return abort(401)  # Unauthorized
         return function(*args, **kwargs)
     return wrapper
 
-@app.route("/")
-def index():
+@app.route("/", methods=["GET", "POST"])
+def manual_login():
+    if request.method == "POST":
+        # Handle manual login
+        username = request.form.get("username")
+        password = request.form.get("password")
+        
+        if username == test_user["username"] and password == test_user["password"]:
+            session["user"] = username
+            return redirect("/home")
+        else:
+            return render_template("index.html", error=True)
+    
     return render_template("index.html")
 
-@app.route("/privacy_policy")
-def privacy_policy():
-    return render_template("privacy_policy.html")
 
-@app.route("/terms_of_service")
-def terms_of_service():
-    return render_template("terms_of_service.html")
-
-@app.route("/protected_area")
-@login_is_required
-def protected_area():
-    return render_template("protected_area.html", name=session["name"])
-
-@app.route("/login")
-def login():
+@app.route("/google_login")
+def google_login():
+    # Redirect to Google's OAuth 2.0 login
     authorization_url, state = flow.authorization_url()
     session["state"] = state
     return redirect(authorization_url)
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/")
 
 @app.route("/callback")
 def callback():
@@ -83,4 +84,24 @@ def callback():
     session["name"] = id_info.get("name")
     print(session["google_id"])
     print(session["name"])
-    return redirect("/protected_area")
+    return redirect("/home")
+
+# Home page
+@app.route("/home")
+@login_is_required
+def home():
+    username = session.get("user") or session.get("name")  # Use username or Google name
+    return render_template("home.html", username=username)
+
+# Settings page
+@app.route("/settings")
+def settings():
+    username = session.get("user") or session.get("name")
+    return render_template("settings.html", username=username)
+
+# Logout route
+@app.route("/logout")
+def logout():
+    session.clear()  # Clear all session data
+    return redirect("/")
+
