@@ -5,35 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
 </head>
 <body>
     <header>HomeGuard</header>
 
     <div class="settings-container">
-        <div class="settings-item">
+        <!-- Name -->
+        <div class="settings-item" onclick="openModal('nameModal')">
             <span class="settings-label">Name</span>
-            <span class="settings-value">John Apple</span>
+            <span id="currentName" class="settings-value">John Apple</span>
             <button class="settings-action">></button>
         </div>
 
-        <div class="settings-item">
+        <!-- Address -->
+        <div class="settings-item" onclick="openModal('addressModal')">
             <span class="settings-label">Address</span>
-            <span class="settings-value">703 N 94th St, Kansas City, KS 66112, USA</span>
+            <span id="currentAddress" class="settings-value">703 N 94th St, Kansas City, KS 66112, USA</span>
             <button class="settings-action">></button>
         </div>
 
-        <div class="settings-item">
+        <!-- Add Pre-recorded Message -->
+        <div class="settings-item" onclick="openModal('messageModal')">
             <span class="settings-label">Add Pre-recorded Message</span>
             <button class="settings-action mic-icon">🎤</button>
         </div>
 
-        <div class="settings-item">
+        <!-- Select Voice Changer -->
+        <div class="settings-item" onclick="openModal('voiceChangerModal')">
             <span class="settings-label">Select Voice Changer</span>
-            <span class="settings-value">Adult Male Voice</span>
+            <span id="voiceSelected" class="settings-value">Adult Male Voice</span>
             <button class="settings-action">></button>
         </div>
-        <div class="logout-container">
-            <a href="/logout" class="logout-button">Logout</a>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="logout-container">
+        <form action="/logout" method="POST">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+
+    <!-- Modals -->
+    <!-- Name Modal -->
+    <div class="modal" id="nameModal">
+        <div class="modal-content">
+            <h3>Edit Name</h3>
+            <input type="text" id="nameInput" placeholder="Enter name">
+            <button onclick="saveName()">Save</button>
+            <button class="close-modal" onclick="closeModal('nameModal')">Close</button>
+        </div>
+    </div>
+
+    <!-- Address Modal -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <h3>Edit Address</h3>
+            <textarea id="addressInput" placeholder="Enter new address"></textarea>
+            <button onclick="saveAddress()">Save</button>
+            <button class="close-modal" onclick="closeModal('addressModal')">Close</button>
+        </div>
+    </div>
+
+    <!-- Pre-recorded Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <h3>Add Pre-recorded Message</h3>
+            <input type="file" id="audioUpload" accept="audio/*">
+            <p class="file-info" id="fileInfo">No file selected</p>
+            <button onclick="uploadAudio()">Upload</button>
+            <button class="close-modal" onclick="closeModal('messageModal')">Close</button>
+        </div>
+    </div>
+
+    <!-- Voice Changer Modal -->
+    <div class="modal" id="voiceChangerModal">
+        <div class="modal-content">
+            <h3>Select Voice Changer</h3>
+            <select id="voiceChangerSelect">
+                <option value="Adult Male Voice">Adult Male Voice</option>
+                <option value="Adult Female Voice">Adult Female Voice</option>
+                <option value="Child Voice">Child Voice</option>
+                <option value="Robot Voice">Robot Voice</option>
+            </select>
+            <button onclick="saveVoiceChanger()">Save</button>
+            <button class="close-modal" onclick="closeModal('voiceChangerModal')">Close</button>
         </div>
     </div>
 
