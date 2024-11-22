@@ -7,6 +7,7 @@ from flask import Flask, session, redirect, request, abort, render_template
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
+from db import add_user, find_user
 import google.auth.transport.requests
 
 app = Flask(__name__)
@@ -41,17 +42,24 @@ def login_is_required(function):
 @app.route("/", methods=["GET", "POST"])
 def manual_login():
     if request.method == "POST":
-        # Handle manual login
+        # Retrieve the username and password from the form
         username = request.form.get("username")
         password = request.form.get("password")
         
-        if username == test_user["username"] and password == test_user["password"]:
+        # Search for the user in the database
+        user = find_user(username)
+        
+        if user and user["password"] == password:
+            # If the user is found and the password matches, log them in
             session["user"] = username
             return redirect("/home")
         else:
+            # Render the login page with an error message if login fails
             return render_template("index.html", error=True)
     
+    # Render the login page for GET requests
     return render_template("index.html")
+
 
 
 @app.route("/google_login")
@@ -98,6 +106,13 @@ def home():
 def settings():
     username = session.get("user") or session.get("name")
     return render_template("settings.html", username=username)
+
+@app.route("/", methods=["POST"])
+def register():
+    username = request.form["username"]
+    password = request.form["password"]
+    add_user(username, password)
+    return "User registered successfully!"
 
 # Logout route
 @app.route("/logout")
