@@ -118,10 +118,10 @@ def update_username():
         return {"success": False, "message": "User not logged in"}, 400
 
     data = request.get_json()
-    if not data or not data.get("name"):
+    if not data or not data.get("username"):
         return {"success": False, "message": "Invalid request data"}, 400
 
-    new_name = data.get("name")
+    new_name = data.get("username")
 
     # Check if the new username is already taken
     existing_user = find_user(new_name)
@@ -137,27 +137,6 @@ def update_username():
     except Exception as e:
         return {"success": False, "message": str(e)}, 500
 
-
-@app.route("/update_password", methods=["POST"])
-@login_is_required
-def update_password():
-    username = session.get("user")
-    if not username:
-        return {"success": False, "message": "User not logged in"}, 400
-
-    data = request.get_json()
-    if not data or not data.get("password"):
-        return {"success": False, "message": "Invalid request data"}, 400
-
-    new_password = data.get("password")
-
-    try:
-        result = users_collection.update_one({"username": username}, {"$set": {"password": new_password}})
-        if result.modified_count > 0:
-            return {"success": True}
-        return {"success": False, "message": "Update failed"}, 500
-    except Exception as e:
-        return {"success": False, "message": str(e)}, 500
 
 
 # Logout route
