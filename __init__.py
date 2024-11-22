@@ -106,7 +106,9 @@ def home():
 def settings():
     username = session.get("user") or session.get("name")
     user = find_user(username)
-    return render_template("settings.html", username=username)
+    if not user:
+        return redirect("/")
+    return render_template("settings.html", user=user)
 
 
 
