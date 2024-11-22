@@ -18,10 +18,10 @@
             <button class="settings-action">></button>
         </div>
 
-        <!-- Address -->
-        <div class="settings-item" onclick="openModal('addressModal')">
+        <!-- Password -->
+        <div class="settings-item" onclick="openModal('passwordModal')">
             <span class="settings-label">Address</span>
-            <span id="currentAddress" class="settings-value">703 N 94th St, Kansas City, KS 66112, USA</span>
+            <span id="currentPassword" class="settings-value">******</span>
             <button class="settings-action">></button>
         </div>
 
@@ -60,10 +60,10 @@
     <!-- Address Modal -->
     <div class="modal" id="addressModal">
         <div class="modal-content">
-            <h3>Edit Address</h3>
-            <textarea id="addressInput" placeholder="Enter new address"></textarea>
-            <button onclick="saveAddress()">Save</button>
-            <button class="close-modal" onclick="closeModal('addressModal')">Close</button>
+            <h3>Change Password</h3>
+            <textarea id="passwordInput" placeholder="Enter new password"></textarea>
+            <button onclick="savePassword()">Save</button>
+            <button class="close-modal" onclick="closeModal('passwordModal')">Close</button>
         </div>
     </div>
 

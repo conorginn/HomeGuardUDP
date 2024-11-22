@@ -19,14 +19,14 @@ function saveName() {
 }
 
 // Save Address
-function saveAddress() {
-    const address = document.getElementById("addressInput").value;
-    if (address.trim() !== "") {
-        document.getElementById("currentAddress").innerText = address; // Correctly set the new address
+function savePassword() {
+    const password = document.getElementById("passwordInput").value;
+    if (password.trim() !== "") {
+        document.getElementById("currentPassword").innerText = address; // Correctly set the new address
     } else {
-        alert("Please enter a valid address.");
+        alert("Please enter a valid password.");
     }
-    closeModal("addressModal");
+    closeModal("passwordModal");
 }
 
 // Handle Audio Upload
