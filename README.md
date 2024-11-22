@@ -20,8 +20,10 @@ Welcome to **HomeGuard**, a smart home security app designed to enhance your saf
 - **Pre-Recorded Messages**: Use customizable pre-recorded responses to communicate with visitors with ease.
 - **Activity Recordings**: Review past notifications and video recordings with clear timestamps for easy tracking.  
 - **User-Friendly Interface**: Simple and intuitive design with accessibility in mind, including high-contrast visuals and clear layouts.
-
-
 ---
-
 Thank you for using HomeGuard! Your security is our priority.
+
+![HomeGuard Logo](images/textLogo.png)
+
+
+
