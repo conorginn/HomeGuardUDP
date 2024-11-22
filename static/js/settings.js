@@ -9,20 +9,20 @@ function closeModal(modalId) {
 
 // Save Name
 function saveName() {
-    const name = document.getElementById("nameInput").value;
+    const username = document.getElementById("nameInput").value;
 
-    if (name.trim() !== "") {
+    if (username.trim() !== "") {
         fetch("/update_username", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name }), // Send the new name as JSON
+            body: JSON.stringify({ username }), // Send the new name as JSON
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    document.getElementById("currentName").innerText = name; // Update the UI
+                    document.getElementById("currentName").innerText = username; // Update the UI
                     closeModal("nameModal"); // Close the modal
                 } else {
                     alert(data.message || "Failed to update name.");
