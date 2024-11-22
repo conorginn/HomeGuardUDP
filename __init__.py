@@ -107,16 +107,10 @@ def settings():
     username = session.get("user") or session.get("name")
     return render_template("settings.html", username=username)
 
-@app.route("/", methods=["POST"])
-def register():
-    username = request.form["username"]
-    password = request.form["password"]
-    add_user(username, password)
-    return "User registered successfully!"
+
 
 # Logout route
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
 def logout():
     session.clear()  # Clear all session data
     return redirect("/")
-
