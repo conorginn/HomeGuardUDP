@@ -112,34 +112,52 @@ def settings():
 
 @app.route("/update_name", methods=["POST"])
 @login_is_required
-def update_name():
+def update_username():
     username = session.get("user")
+    if not username:
+        return {"success": False, "message": "User not logged in"}, 400
+
     data = request.get_json()
+    if not data or not data.get("name"):
+        return {"success": False, "message": "Invalid request data"}, 400
+
     new_name = data.get("name")
 
-    if not new_name:
-        return {"success": False, "message": "Invalid name"}, 400
+    # Check if the new username is already taken
+    existing_user = find_user(new_name)
+    if existing_user:
+        return {"success": False, "message": "Username already taken"}, 409
 
-    result = users_collection.update_one({"username": username}, {"$set": {"username": new_name}})
-    if result.modified_count > 0:
-        session["user"] = new_name
-        return {"success": True}
-    return {"success": False}, 500
+    try:
+        result = users_collection.update_one({"username": username}, {"$set": {"username": new_name}})
+        if result.modified_count > 0:
+            session["user"] = new_name
+            return {"success": True}
+        return {"success": False, "message": "Update failed"}, 500
+    except Exception as e:
+        return {"success": False, "message": str(e)}, 500
+
 
 @app.route("/update_password", methods=["POST"])
 @login_is_required
 def update_password():
     username = session.get("user")
+    if not username:
+        return {"success": False, "message": "User not logged in"}, 400
+
     data = request.get_json()
+    if not data or not data.get("password"):
+        return {"success": False, "message": "Invalid request data"}, 400
+
     new_password = data.get("password")
 
-    if not new_password:
-        return {"success": False, "message": "Invalid password"}, 400
-
-    result = users_collection.update_one({"username": username}, {"$set": {"password": new_password}})
-    if result.modified_count > 0:
-        return {"success": True}
-    return {"success": False}, 500
+    try:
+        result = users_collection.update_one({"username": username}, {"$set": {"password": new_password}})
+        if result.modified_count > 0:
+            return {"success": True}
+        return {"success": False, "message": "Update failed"}, 500
+    except Exception as e:
+        return {"success": False, "message": str(e)}, 500
 
 
 # Logout route

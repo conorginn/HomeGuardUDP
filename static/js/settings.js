@@ -10,22 +10,27 @@ function closeModal(modalId) {
 // Save Name
 function saveName() {
     const name = document.getElementById("nameInput").value;
+
     if (name.trim() !== "") {
-        fetch("/update_name", {
+        fetch("/update_username", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name }),
+            body: JSON.stringify({ name }), // Send the new name as JSON
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    document.getElementById("currentName").innerText = name;
-                    closeModal("nameModal");
+                    document.getElementById("currentName").innerText = name; // Update the UI
+                    closeModal("nameModal"); // Close the modal
                 } else {
                     alert(data.message || "Failed to update name.");
                 }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the name.");
             });
     } else {
         alert("Please enter a valid name.");
@@ -35,22 +40,27 @@ function saveName() {
 
 function savePassword() {
     const password = document.getElementById("passwordInput").value;
+
     if (password.trim() !== "") {
         fetch("/update_password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ password }),
+            body: JSON.stringify({ password }), // Send the new password as JSON
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
                     alert("Password updated successfully!");
-                    closeModal("passwordModal");
+                    closeModal("passwordModal"); // Close the modal
                 } else {
                     alert(data.message || "Failed to update password.");
                 }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the password.");
             });
     } else {
         alert("Please enter a valid password.");
