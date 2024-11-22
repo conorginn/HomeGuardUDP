@@ -9,24 +9,62 @@ function closeModal(modalId) {
 
 // Save Name
 function saveName() {
-    const name = document.getElementById("nameInput").value;
-    if (name.trim() !== "") {
-        document.getElementById("currentName").innerText = name; // Correctly set the new name
+    const username = document.getElementById("nameInput").value;
+
+    if (username.trim() !== "") {
+        fetch("/update_username", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username }), // Send the new name as JSON
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    document.getElementById("currentName").innerText = username; // Update the UI
+                    closeModal("nameModal"); // Close the modal
+                } else {
+                    alert(data.message || "Failed to update name.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the name.");
+            });
     } else {
         alert("Please enter a valid name.");
     }
-    closeModal("nameModal");
 }
 
-// Save Address
+
 function savePassword() {
     const password = document.getElementById("passwordInput").value;
+
     if (password.trim() !== "") {
-        document.getElementById("currentPassword").innerText = address; // Correctly set the new address
+        fetch("/update_password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }), // Send the new password as JSON
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Password updated successfully!");
+                    closeModal("passwordModal"); // Close the modal
+                } else {
+                    alert(data.message || "Failed to update password.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while updating the password.");
+            });
     } else {
         alert("Please enter a valid password.");
     }
-    closeModal("passwordModal");
 }
 
 // Handle Audio Upload

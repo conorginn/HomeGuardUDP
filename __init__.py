@@ -7,7 +7,7 @@ from flask import Flask, session, redirect, request, abort, render_template
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
-from db import add_user, find_user
+from db import add_user, find_user, users_collection
 import google.auth.transport.requests
 
 app = Flask(__name__)
@@ -110,7 +110,50 @@ def settings():
         return redirect("/")
     return render_template("settings.html", user=user)
 
+@app.route("/update_username", methods=["POST"])
+def update_username():
+    username = session.get("user")
 
+    data = request.get_json()
+    if not data or not data.get("username"):
+        return {"success": False, "message": "Invalid request data"}, 400
+
+    new_name = data.get("username")
+
+    # Check if the new username is already taken
+    existing_user = find_user(new_name)
+    if existing_user:
+        return {"success": False, "message": "Username already taken"}, 409
+
+    try:
+        result = users_collection.update_one({"username": username}, {"$set": {"username": new_name}})
+        if result.modified_count > 0:
+            session["user"] = new_name
+            return {"success": True}
+        return {"success": False, "message": "Update failed"}, 500
+    except Exception as e:
+        return {"success": False, "message": str(e)}, 500
+    
+
+@app.route("/update_password", methods=["POST"])
+def update_password():
+    username = session.get("user")
+    if not username:
+        return {"success": False, "message": "User not logged in"}, 400
+
+    data = request.get_json()
+    if not data or not data.get("password"):
+        return {"success": False, "message": "Invalid request data"}, 400
+
+    new_password = data.get("password")
+
+    try:
+        result = users_collection.update_one({"username": username}, {"$set": {"password": new_password}})
+        if result.modified_count > 0:
+            return {"success": True}
+        return {"success": False, "message": "Update failed"}, 500
+    except Exception as e:
+        return {"success": False, "message": str(e)}, 500
 
 # Logout route
 @app.route("/logout", methods=["POST"])
