@@ -11,22 +11,50 @@ function closeModal(modalId) {
 function saveName() {
     const name = document.getElementById("nameInput").value;
     if (name.trim() !== "") {
-        document.getElementById("currentName").innerText = name; // Correctly set the new name
+        fetch("/update_name", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    document.getElementById("currentName").innerText = name;
+                    closeModal("nameModal");
+                } else {
+                    alert(data.message || "Failed to update name.");
+                }
+            });
     } else {
         alert("Please enter a valid name.");
     }
-    closeModal("nameModal");
 }
 
-// Save Address
+
 function savePassword() {
     const password = document.getElementById("passwordInput").value;
     if (password.trim() !== "") {
-        document.getElementById("currentPassword").innerText = address; // Correctly set the new address
+        fetch("/update_password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Password updated successfully!");
+                    closeModal("passwordModal");
+                } else {
+                    alert(data.message || "Failed to update password.");
+                }
+            });
     } else {
         alert("Please enter a valid password.");
     }
-    closeModal("passwordModal");
 }
 
 // Handle Audio Upload

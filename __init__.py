@@ -7,7 +7,7 @@ from flask import Flask, session, redirect, request, abort, render_template
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
-from db import add_user, find_user
+from db import add_user, find_user, users_collection
 import google.auth.transport.requests
 
 app = Flask(__name__)
@@ -110,6 +110,36 @@ def settings():
         return redirect("/")
     return render_template("settings.html", user=user)
 
+@app.route("/update_name", methods=["POST"])
+@login_is_required
+def update_name():
+    username = session.get("user")
+    data = request.get_json()
+    new_name = data.get("name")
+
+    if not new_name:
+        return {"success": False, "message": "Invalid name"}, 400
+
+    result = users_collection.update_one({"username": username}, {"$set": {"username": new_name}})
+    if result.modified_count > 0:
+        session["user"] = new_name
+        return {"success": True}
+    return {"success": False}, 500
+
+@app.route("/update_password", methods=["POST"])
+@login_is_required
+def update_password():
+    username = session.get("user")
+    data = request.get_json()
+    new_password = data.get("password")
+
+    if not new_password:
+        return {"success": False, "message": "Invalid password"}, 400
+
+    result = users_collection.update_one({"username": username}, {"$set": {"password": new_password}})
+    if result.modified_count > 0:
+        return {"success": True}
+    return {"success": False}, 500
 
 
 # Logout route
