@@ -105,6 +105,7 @@ def home():
 @app.route("/settings")
 def settings():
     username = session.get("user") or session.get("name")
+    user = find_user(username)
     return render_template("settings.html", username=username)
 
 @app.route("/", methods=["POST"])

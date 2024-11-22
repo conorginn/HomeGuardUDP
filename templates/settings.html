@@ -14,14 +14,14 @@
         <!-- Name -->
         <div class="settings-item" onclick="openModal('nameModal')">
             <span class="settings-label">Name</span>
-            <span id="currentName" class="settings-value">John Apple</span>
+            <span id="currentName" class="settings-value">{{ user.name }}</span>
             <button class="settings-action">></button>
         </div>
 
         <!-- Password -->
         <div class="settings-item" onclick="openModal('passwordModal')">
             <span class="settings-label">Password</span>
-            <span id="currentPassword" class="settings-value">******</span>
+            <span id="currentPassword" class="settings-value">{{ user.password }}</span>
             <button class="settings-action">></button>
         </div>
 
