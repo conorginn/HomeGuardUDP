@@ -3,7 +3,8 @@ import pathlib
 import requests
 import json
 
-from flask import Flask, session, redirect, request, abort, render_template
+from pubnub_helper import subscribe_to_channel, get_messages, publish_message
+from flask import Flask, session, redirect, request, abort, render_template, jsonify
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
@@ -11,6 +12,8 @@ from db import add_user, find_user, users_collection
 import google.auth.transport.requests
 
 app = Flask(__name__)
+
+
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
 
@@ -154,6 +157,30 @@ def update_password():
         return {"success": False, "message": "Update failed"}, 500
     except Exception as e:
         return {"success": False, "message": str(e)}, 500
+    
+
+@app.route("/test_pubnub", methods=["GET"])
+def test_pubnub():
+    channel_name = "motion-detection"  
+    subscribe_to_channel(channel_name)
+    return f"Subscribed to channel: {channel_name}"
+
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    channel_name = "motion-detection" 
+    message = {"text": "Hello from HomeGuard!"}
+    publish_message(channel_name, message)
+    return "Message sent successfully!"
+
+@app.route("/received_messages", methods=["GET"])
+def received_messages():
+    """
+    Route to display received messages.
+    """
+    messages = get_messages()
+    return jsonify({"messages": messages})
+
+
 
 # Logout route
 @app.route("/logout", methods=["POST"])
