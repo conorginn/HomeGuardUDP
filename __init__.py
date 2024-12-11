@@ -3,7 +3,7 @@ import pathlib
 import requests
 import json
 
-from pubnub_helper import subscribe_to_channel, get_messages, publish_message
+from pubnub_helper import subscribe_to_channel, get_messages, publish_message, grant_token_for_user, store_user_token
 from flask import Flask, session, redirect, request, abort, render_template, jsonify
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -180,6 +180,43 @@ def received_messages():
     messages = get_messages()
     return jsonify({"messages": messages})
 
+@app.route("/grant_access/<username>", methods=["POST"])
+def grant_access(username):
+    current_user = session.get("user") or session.get("name")
+    # Only admin can grant tokens
+    if current_user != "admin":
+        return abort(403, "Not authorized")
+
+    # Grant read/write access for demonstration
+    token = grant_token_for_user(username, read=True, write=True, ttl=60)
+    store_user_token(username, token)
+    return jsonify({"message": "Token granted", "token": token})
+
+@app.route("/get_messages", methods=["GET"])
+def get_messages_route():
+    # Use the get_messages() function from pubnub_helper to return DB messages
+    msgs = get_messages()
+    return jsonify(msgs)
+
+@app.route("/motion")
+def motion_page():
+    # Renders motion.html which will poll /get_messages
+    return render_template("motion.html")
+
+def assign_tokens_to_all_users():
+    users = users_collection.find()
+    for user in users:
+        username = user["username"]
+        if "pubnub_token" not in user or not user["pubnub_token"]:
+            print(f"Generating token for user: {username}")
+            token = grant_token_for_user(user_id=username, read=True, write=True)
+            if token:
+                store_user_token(username, token)
+                print(f"Token assigned to {username}: {token}")
+            else:
+                print(f"Failed to generate token for {username}.")
+
+assign_tokens_to_all_users()
 
 
 # Logout route

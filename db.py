@@ -1,19 +1,20 @@
 from pymongo import MongoClient
-
+import uuid
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["homeguard"]
 
 # Collections
 users_collection = db["users"]
-# pre_recorded_messages_collection = db["pre_recorded_messages"]
+messages_collection = db["messages"]
 
 def add_user(username, password):
     user = {
         "username": username,
         "password": password,
         "recordings": [],
-        "notifications": []
+        "notifications": [],
+        "pubnub_token": None
     }
     return users_collection.insert_one(user)
 
