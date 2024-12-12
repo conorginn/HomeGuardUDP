@@ -13,6 +13,8 @@ import google.auth.transport.requests
 
 app = Flask(__name__)
 
+subscribe_to_channel("motion-detection")
+
 
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
@@ -159,19 +161,6 @@ def update_password():
         return {"success": False, "message": str(e)}, 500
     
 
-@app.route("/test_pubnub", methods=["GET"])
-def test_pubnub():
-    channel_name = "motion-detection"  
-    subscribe_to_channel(channel_name)
-    return f"Subscribed to channel: {channel_name}"
-
-@app.route("/send_message", methods=["POST"])
-def send_message():
-    channel_name = "motion-detection" 
-    message = {"text": "Hello from HomeGuard!"}
-    publish_message(channel_name, message)
-    return "Message sent successfully!"
-
 @app.route("/received_messages", methods=["GET"])
 def received_messages():
     """
@@ -218,6 +207,14 @@ def assign_tokens_to_all_users():
 
 assign_tokens_to_all_users()
 
+
+@app.route("/notifications")
+def notifications():
+    username = session.get("user") or session.get("name")
+    user = find_user(username)
+    if not user:
+        return redirect("/")
+    return render_template("notifications.html", user=user)
 
 # Logout route
 @app.route("/logout", methods=["POST"])

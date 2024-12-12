@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback
@@ -12,16 +12,20 @@ pnconfig.publish_key = "pub-c-827567a7-63a1-44c0-8e1b-cd2ad828986d"
 pnconfig.secret_key = "sec-c-NmM0OTU0MDYtMGE5Zi00YTM0LThiOGEtZjViM2MyMGZlNmVj"
 pnconfig.uuid = "homeguard-server"
 pnconfig.ssl = True
-channel_name = "motion-detection"
 
 pubnub = PubNub(pnconfig)
 
 class PubNubCallback(SubscribeCallback):
     def message(self, pubnub, message):
         msg = message.message
-        msg["received_at"] = datetime.utcnow().isoformat()
-        messages_collection.insert_one(msg)
-        print(f"Received and stored message: {msg}")
+        print(f"Received message from PubNub: {msg}")
+        msg["received_at"] = datetime.now(timezone.utc).isoformat()
+        try:
+            messages_collection.insert_one(msg)
+            print(f"Message successfully stored in MongoDB: {msg}")
+        except Exception as e:
+            print(f"Error storing message in MongoDB: {e}")
+
 
     def presence(self, pubnub, presence):
         print(f"Presence event: {presence.event}")
@@ -29,6 +33,8 @@ class PubNubCallback(SubscribeCallback):
     def status(self, pubnub, status):
         if status.is_error():
             print(f"PubNub Error: {status.error_data}")
+        else:
+            print("PubNub connection status:", status.category)
 
 pubnub.add_listener(PubNubCallback())
 
