@@ -1,4 +1,5 @@
 function openModal(modalId) {
+    console.log("Opening modal: " + modalId);
     document.getElementById(modalId).style.display = "flex";
 }
 

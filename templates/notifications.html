@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+    <script src="{{ url_for('static', filename='js/notifications.js') }}" defer></script>
+</head>
+<body>
+    <header>HomeGuard Notifications</header>
+
+    <div class="notifications-container">
+        {% if user.notifications %}
+            <ul class="notification-list">
+                {% for notification in user.notifications %}
+                    <li class="notification-item">
+                        <span class="notification-type">{{ notification.type }}</span>
+                        <span class="notification-message">{{ notification.message }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-notifications">No notifications available</p>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <a href="/home" class="footer-icon">
+            <button>🏠</button>
+        </a>
+        <a href="/recordings" class="footer-icon">
+            <button>📹</button>
+        </a>
+        <a href="/notifications" class="footer-icon active">
+            <button>🔔</button>
+        </a>
+        <a href="/settings" class="footer-icon">
+            <button>⚙️</button>
+        </a>
+    </div>
+</body>
+</html>
