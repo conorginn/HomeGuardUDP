@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback
-from pubnub.models.consumer.v3.channel import Channel
-from db import messages_collection, users_collection
+from db import users_collection
+from bson.objectid import ObjectId
 
 pnconfig = PNConfiguration()
 pnconfig.subscribe_key = "sub-c-8ed390d9-dba9-407a-b13b-908241df610f"
@@ -20,12 +20,29 @@ class PubNubCallback(SubscribeCallback):
         msg = message.message
         print(f"Received message from PubNub: {msg}")
         msg["received_at"] = datetime.now(timezone.utc).isoformat()
-        try:
-            messages_collection.insert_one(msg)
-            print(f"Message successfully stored in MongoDB: {msg}")
-        except Exception as e:
-            print(f"Error storing message in MongoDB: {e}")
 
+        # Retrieve the currently logged-in user's `user_id` from the session
+        user_id = session.get("user_id")
+        if not user_id:
+            print("No user logged in. Cannot store notification.")
+            return
+
+        # Add the message to the user's notifications
+        try:
+            notification = {
+                "notification_id": str(ObjectId()),
+                "type": msg.get("event", "info"),
+                "message": msg,
+                "timestamp": msg["received_at"]
+            }
+            # Update the user's document in the `users` collection
+            users_collection.update_one(
+                {"user_id": user_id},  # Match the user by their `user_id`
+                {"$push": {"notifications": notification}}
+            )
+            print(f"Notification successfully stored for user_id: {user_id}")
+        except Exception as e:
+            print(f"Error storing notification for user_id {user_id}: {e}")
 
     def presence(self, pubnub, presence):
         print(f"Presence event: {presence.event}")
