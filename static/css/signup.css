@@ -1,0 +1,127 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+header {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+
+.signup-container {
+    background-color: #444;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.signup-container h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #bbb;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    background-color: #2e2e2e;
+    color: white;
+    font-size: 14px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.signup-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.signup-button:hover {
+    background-color: #0056b3;
+}
+
+.login-link {
+    margin-top: 15px;
+}
+
+.login-link p {
+    font-size: 14px;
+    color: #bbb;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #222;
+    width: 100%;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+}
+
+.footer-icon {
+    text-decoration: none;
+}
+
+.footer-icon button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}

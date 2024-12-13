@@ -216,6 +216,19 @@ def notifications():
         return redirect("/")
     return render_template("notifications.html", user=user)
 
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if find_user(username):
+            return render_template("signup.html", error="Username already exists")
+
+        add_user(username, password)
+        return redirect("/")
+    return render_template("signup.html")
+
 # Logout route
 @app.route("/logout", methods=["POST"])
 def logout():
