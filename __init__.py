@@ -3,17 +3,16 @@ import pathlib
 import requests
 import json
 
-from pubnub_helper import subscribe_to_channel, get_messages, publish_message, grant_token_for_user, store_user_token
+from pubnub_helper import subscribe_to_channel, get_messages, publish_message, grant_token_for_user, store_user_token, pubnub, PubNubCallback
 from flask import Flask, session, redirect, request, abort, render_template, jsonify
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 from db import add_user, find_user, users_collection
+from bson.objectid import ObjectId
 import google.auth.transport.requests
 
 app = Flask(__name__)
-
-subscribe_to_channel("motion-detection")
 
 
 
@@ -39,7 +38,10 @@ flow = Flow.from_client_secrets_file(
 
 def login_is_required(function):
     def wrapper(*args, **kwargs):
-        if "user" not in session and "google_id" not in session:
+        print("Checking session in decorator:", dict(session))
+        # Check for user_id or google_id
+        if "user_id" not in session and "google_id" not in session:
+            print("Unauthorized access. Session data:", dict(session))
             return abort(401)  # Unauthorized
         return function(*args, **kwargs)
     return wrapper
@@ -47,23 +49,20 @@ def login_is_required(function):
 @app.route("/", methods=["GET", "POST"])
 def manual_login():
     if request.method == "POST":
-        # Retrieve the username and password from the form
         username = request.form.get("username")
         password = request.form.get("password")
-        
-        # Search for the user in the database
         user = find_user(username)
-        
         if user and user["password"] == password:
-            # If the user is found and the password matches, log them in
-            session["user"] = username
+            session["user_id"] = user["user_id"]
+            session["username"] = username
+            print("User logged in successfully. Session data:", dict(session))
             return redirect("/home")
         else:
-            # Render the login page with an error message if login fails
+            print("Login failed. Incorrect username or password.")
             return render_template("index.html", error=True)
-    
-    # Render the login page for GET requests
     return render_template("index.html")
+
+
 
 
 
@@ -99,19 +98,20 @@ def callback():
     print(session["name"])
     return redirect("/home")
 
-# Home page
 @app.route("/home")
 @login_is_required
 def home():
-    username = session.get("user") or session.get("name")  # Use username or Google name
+    print("Session data in home route:", dict(session))
+    username = session.get("username") or session.get("name")
     return render_template("home.html", username=username)
+
 
 # Settings page
 @app.route("/settings")
 def settings():
-    username = session.get("user") or session.get("name")
+    username = session.get("username") or session.get("name")
     user = find_user(username)
-    if not user:
+    if not username:
         return redirect("/")
     return render_template("settings.html", user=user)
 
@@ -210,24 +210,15 @@ assign_tokens_to_all_users()
 
 @app.route("/notifications")
 def notifications():
-    username = session.get("user") or session.get("name")
+    username = session.get("username") or session.get("name")
     user = find_user(username)
-    if not user:
+    if not username:
         return redirect("/")
     return render_template("notifications.html", user=user)
 
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if find_user(username):
-            return render_template("signup.html", error="Username already exists")
-
-        add_user(username, password)
-        return redirect("/")
-    return render_template("signup.html")
+@app.route("/debug_session")
+def debug_session():
+    return jsonify(dict(session))
 
 # Logout route
 @app.route("/logout", methods=["POST"])
