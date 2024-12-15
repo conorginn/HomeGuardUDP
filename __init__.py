@@ -228,9 +228,8 @@ def signup():
         add_user(username, password)
         return redirect("/")
     return render_template("signup.html")
-
+    
 @app.route("/recordings")
-@login_is_required
 def recordings():
     username = session.get("user")
     user = find_user(username)
