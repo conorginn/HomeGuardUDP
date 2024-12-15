@@ -3,7 +3,7 @@ import pathlib
 import requests
 import json
 
-from pubnub_helper import get_messages, publish_message, grant_token_for_user, store_user_token, pubnub, PubNubCallback
+from pubnub_helper import get_messages, publish_message, grant_token_for_user, store_user_token, pubnub, PubNubCallback, send_from_directory
 from flask import Flask, session, redirect, request, abort, render_template, jsonify
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -35,6 +35,11 @@ flow = Flow.from_client_secrets_file(
             "openid"],
     redirect_uri="https://homeguard.website/callback"
 )
+
+@app.route('/videos/<filename>')
+def get_video(filename):
+    # Ensure the filename is secure
+    return send_from_directory('/home/haroldt2/recordings', filename)
 
 def login_is_required(function):
     def wrapper(*args, **kwargs):
