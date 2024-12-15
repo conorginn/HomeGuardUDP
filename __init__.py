@@ -221,7 +221,6 @@ def debug_session():
     return jsonify(dict(session))
 
 @app.route("/recordings")
-@login_is_required
 def recordings():
     username = session.get("user")
     user = find_user(username)
