@@ -10,6 +10,7 @@ messages_collection = db["messages"]
 
 def add_user(username, password):
     user = {
+        "user_id": str(uuid.uuid4()),
         "username": username,
         "password": password,
         "recordings": [],
