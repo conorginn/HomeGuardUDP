@@ -14,6 +14,7 @@ import google.auth.transport.requests
 
 app = Flask(__name__)
 
+subscribe_to_channel("motion-detection")
 
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
@@ -142,7 +143,7 @@ def update_username():
 
 @app.route("/update_password", methods=["POST"])
 def update_password():
-    username = session.get("user")
+    username = session.get("username")
     if not username:
         return {"success": False, "message": "User not logged in"}, 400
 
@@ -232,7 +233,7 @@ def signup():
 
 @app.route("/recordings")
 def recordings():
-    username = session.get("user")
+    username = session.get("username")
     user = find_user(username)
     
     if not user:
