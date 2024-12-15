@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback
@@ -31,17 +31,31 @@ class PubNubCallback(SubscribeCallback):
             print(f"No user found for device_id: {device_id}")
             return
 
-        # Create notification
+        user_id = user["user_id"]
+        now = datetime.now(timezone.utc)
+
+        # Check for cooldown (last notification time)
+        last_notification = None
+        if "notifications" in user and user["notifications"]:
+            last_notification = user["notifications"][-1]  # Most recent notification
+        
+        if last_notification:
+            last_timestamp = datetime.fromisoformat(last_notification["timestamp"])
+            if (now - last_timestamp) < timedelta(seconds=30):
+                print(f"Cooldown active. No notification sent for user: {user['username']}")
+                return
+
+        # Create a notification if cooldown has passed
         notification = {
             "notification_id": str(ObjectId()),
             "type": msg.get("event", "info"),
             "message": msg.get("message"),
-            "timestamp": datetime.now(timezone.utc).isoformat()
+            "timestamp": now.isoformat()
         }
 
         # Update user's notifications
         users_collection.update_one(
-            {"user_id": user["user_id"]},
+            {"user_id": user_id},
             {"$push": {"notifications": notification}}
         )
         print(f"Notification stored for user: {user['username']}")
