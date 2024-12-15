@@ -21,11 +21,12 @@ class PubNubCallback(SubscribeCallback):
         print(f"Received message: {msg}")
 
         device_id = msg.get("device_id")
+        file_path = msg.get("file_path")
         if not device_id:
             print("Error: No device_id provided.")
             return
 
-        # Find user linked to this device_id
+        # Find the user associated with the device
         user = users_collection.find_one({"devices": device_id})
         if not user:
             print(f"No user found for device_id: {device_id}")
@@ -34,31 +35,30 @@ class PubNubCallback(SubscribeCallback):
         user_id = user["user_id"]
         now = datetime.now(timezone.utc)
 
-        # Check for cooldown (last notification time)
-        last_notification = None
-        if "notifications" in user and user["notifications"]:
-            last_notification = user["notifications"][-1]  # Most recent notification
-        
-        if last_notification:
-            last_timestamp = datetime.fromisoformat(last_notification["timestamp"])
-            if (now - last_timestamp) < timedelta(seconds=30):
-                print(f"Cooldown active. No notification sent for user: {user['username']}")
-                return
-
-        # Create a notification if cooldown has passed
+        # Add a notification
         notification = {
             "notification_id": str(ObjectId()),
             "type": msg.get("event", "info"),
             "message": msg.get("message"),
             "timestamp": now.isoformat()
         }
-
-        # Update user's notifications
         users_collection.update_one(
             {"user_id": user_id},
             {"$push": {"notifications": notification}}
         )
-        print(f"Notification stored for user: {user['username']}")
+
+        # Add recording info
+        if file_path:
+            recording = {
+                "recording_id": str(ObjectId()),
+                "timestamp": now.isoformat(),
+                "file_path": file_path
+            }
+            users_collection.update_one(
+                {"user_id": user_id},
+                {"$push": {"recordings": recording}}
+            )
+            print(f"Recording stored for user: {user['username']}")
 
 pubnub.add_listener(PubNubCallback())
 pubnub.subscribe().channels("motion-detection").execute()
