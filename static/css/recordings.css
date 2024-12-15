@@ -1,0 +1,108 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 0;
+    background-color: #222;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Recordings Container */
+.recordings-container {
+    width: 90%;
+    max-width: 400px;
+    margin-top: 10px;
+    overflow-y: auto;
+    padding-bottom: 60px;
+}
+
+/* Recording Card */
+.recording-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #444;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.thumbnail video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Recording Details */
+.recording-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #222;
+    color: white;
+    font-size: 14px;
+}
+
+.timestamp {
+    font-weight: bold;
+}
+
+.date {
+    color: #ccc;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #222;
+    width: 100%;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+}
+
+.footer-icon {
+    text-decoration: none;
+}
+
+.footer-icon button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+.footer-icon.active button {
+    color: #007bff;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .recordings-container {
+        width: 95%;
+    }
+
+    .footer-icon button {
+        font-size: 20px;
+    }
+}

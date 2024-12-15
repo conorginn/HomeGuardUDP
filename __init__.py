@@ -220,6 +220,29 @@ def notifications():
 def debug_session():
     return jsonify(dict(session))
 
+@app.route("/recordings")
+@login_is_required
+def recordings():
+    username = session.get("user")
+    user = find_user(username)
+    
+    if not user:
+        return redirect("/")
+
+    # Extract recordings from the database
+    recordings = user.get("recordings", [])
+    
+    # Add formatted date for simplicity
+    formatted_recordings = []
+    for recording in recordings:
+        formatted_recordings.append({
+            "file_path": recording["file_path"],
+            "timestamp": recording["timestamp"].split("T")[1],  # Extract time
+            "date": recording["timestamp"].split("T")[0]       # Extract date
+        })
+
+    return render_template("recordings.html", recordings=formatted_recordings)
+
 # Logout route
 @app.route("/logout", methods=["POST"])
 def logout():
