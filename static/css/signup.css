@@ -1,4 +1,4 @@
-/* General styles */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #333;
@@ -11,28 +11,26 @@ body {
     height: 100vh;
 }
 
-/* Center the signup form */
+
 .signup-container {
     background-color: #444;
     padding: 20px;
     border-radius: 10px;
-    width: 90%; /* Adjust width for mobile */
-    max-width: 400px; /* Restrict maximum width for larger screens */
+    width: 90%; 
+    max-width: 400px; 
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
-/* Form title */
 .signup-container h1 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #fff;
 }
 
-/* Form fields */
 .signup-container label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     text-align: left;
     font-weight: bold;
     color: #ddd;
@@ -43,20 +41,22 @@ body {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: none;
+    border: 1px solid #666; 
     border-radius: 5px;
-    background-color: #555;
+    background-color: #555; 
     color: #fff;
     font-size: 16px;
+    transition: border 0.3s ease, background-color 0.3s ease;
 }
 
 .signup-container input[type="text"]:focus,
 .signup-container input[type="password"]:focus {
     outline: none;
-    border: 2px solid #007bff;
+    border: 2px solid #007bff; 
+    background-color: #444;
 }
 
-/* Signup button */
+
 .signup-container button {
     width: 100%;
     padding: 12px;
@@ -74,7 +74,7 @@ body {
     background-color: #0056b3;
 }
 
-/* Login link */
+
 .signup-container .login-link {
     margin-top: 15px;
     font-size: 14px;
@@ -90,7 +90,7 @@ body {
     text-decoration: underline;
 }
 
-/* Mobile adjustments */
+
 @media (max-width: 768px) {
     .signup-container {
         padding: 15px;
