@@ -32,3 +32,9 @@ def add_notification(user_id, notification_type, message):
         {"_id": user_id},
         {"$push": {"notifications": notification}}
     )
+def register_device(user_id, device_id):
+    result = users_collection.update_one(
+        {"user_id": user_id},
+        {"$addToSet": {"devices": device_id}}
+    )
+    return result.modified_count > 0
