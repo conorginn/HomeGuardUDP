@@ -3,7 +3,7 @@ import pathlib
 import requests
 import json
 
-from pubnub_helper import subscribe_to_channel, get_messages, publish_message, grant_token_for_user, store_user_token, pubnub, PubNubCallback
+from pubnub_helper import get_messages, publish_message, grant_token_for_user, store_user_token, pubnub, PubNubCallback
 from flask import Flask, session, redirect, request, abort, render_template, jsonify
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -13,8 +13,6 @@ from bson.objectid import ObjectId
 import google.auth.transport.requests
 
 app = Flask(__name__)
-
-subscribe_to_channel("motion-detection")
 
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
@@ -252,6 +250,21 @@ def recordings():
         })
 
     return render_template("recordings.html", recordings=formatted_recordings)
+
+@app.route("/register_device", methods=["POST"])
+def register_device():
+    user_id = session.get("user_id")
+    data = request.get_json()
+    device_id = data.get("device_id")
+
+    if not device_id:
+        return {"success": False, "message": "Device ID is required."}, 400
+
+    success = register_device(user_id, device_id)
+    if success:
+        return {"success": True, "message": "Device registered successfully!"}
+    return {"success": False, "message": "Failed to register device."}
+
 
 # Logout route
 @app.route("/logout", methods=["POST"])

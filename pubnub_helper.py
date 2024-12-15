@@ -18,45 +18,36 @@ pubnub = PubNub(pnconfig)
 class PubNubCallback(SubscribeCallback):
     def message(self, pubnub, message):
         msg = message.message
-        print(f"Received message from PubNub: {msg}")
-        msg["received_at"] = datetime.now(timezone.utc).isoformat()
+        print(f"Received message: {msg}")
 
-        # Retrieve the currently logged-in user's `user_id` from the session
-        user_id = session.get("user_id")
-        if not user_id:
-            print("No user logged in. Cannot store notification.")
+        device_id = msg.get("device_id")
+        if not device_id:
+            print("Error: No device_id provided.")
             return
 
-        # Add the message to the user's notifications
-        try:
-            notification = {
-                "notification_id": str(ObjectId()),
-                "type": msg.get("event", "info"),
-                "message": msg,
-                "timestamp": msg["received_at"]
-            }
-            # Update the user's document in the `users` collection
-            users_collection.update_one(
-                {"user_id": user_id},  # Match the user by their `user_id`
-                {"$push": {"notifications": notification}}
-            )
-            print(f"Notification successfully stored for user_id: {user_id}")
-        except Exception as e:
-            print(f"Error storing notification for user_id {user_id}: {e}")
+        # Find user linked to this device_id
+        user = users_collection.find_one({"devices": device_id})
+        if not user:
+            print(f"No user found for device_id: {device_id}")
+            return
 
-    def presence(self, pubnub, presence):
-        print(f"Presence event: {presence.event}")
+        # Create notification
+        notification = {
+            "notification_id": str(ObjectId()),
+            "type": msg.get("event", "info"),
+            "message": msg.get("message"),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
 
-    def status(self, pubnub, status):
-        if status.is_error():
-            print(f"PubNub Error: {status.error_data}")
-        else:
-            print("PubNub connection status:", status.category)
+        # Update user's notifications
+        users_collection.update_one(
+            {"user_id": user["user_id"]},
+            {"$push": {"notifications": notification}}
+        )
+        print(f"Notification stored for user: {user['username']}")
 
 pubnub.add_listener(PubNubCallback())
-
-def subscribe_to_channel(channel_name):
-    pubnub.subscribe().channels(channel_name).execute()
+pubnub.subscribe().channels("motion-detection").execute()
 
 def publish_message(channel_name, message):
     pubnub.publish().channel(channel_name).message(message).sync()
