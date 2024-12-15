@@ -216,12 +216,21 @@ def notifications():
         return redirect("/")
     return render_template("notifications.html", user=user)
 
-@app.route("/debug_session")
-def debug_session():
-    return jsonify(dict(session))
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if find_user(username):
+            return render_template("signup.html", error="Username already exists")
+
+        add_user(username, password)
+        return redirect("/")
+    return render_template("signup.html")
+    
 
 @app.route("/recordings")
-@login_is_required
 def recordings():
     username = session.get("user")
     user = find_user(username)
