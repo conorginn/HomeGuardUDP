@@ -17,7 +17,9 @@
                     <li class="notification-item">
                         <span class="notification-type">{{ notification.type }}</span>
                         <span class="notification-message">{{ notification.message }}</span>
-                        <span class="notification-timestamp">{{ notification.timestamp }}</span>
+                        <span class="notification-timestamp">
+                            {{ notification.timestamp | datetimeformat }}
+                        </span>
                     </li>
                 {% endfor %}
             </ul>
