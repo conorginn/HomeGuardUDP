@@ -8,7 +8,7 @@ Welcome to **HomeGuard**, a smart home security app designed to enhance your saf
 
 **Wiktor Teter**: Database/Backend Development
 
-**Xu Teck Tan**: UX/Frontend Development
+**Xu Teck Tan**: UI/Frontend Development
 
 **Conor McGinn**: User Testing
 
