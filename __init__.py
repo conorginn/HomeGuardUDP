@@ -11,6 +11,7 @@ from pip._vendor import cachecontrol
 from db import add_user, find_user, users_collection
 from bson.objectid import ObjectId
 import google.auth.transport.requests
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -45,6 +46,13 @@ def login_is_required(function):
         return function(*args, **kwargs)
     return wrapper
 
+@app.template_filter('datetimeformat')
+def datetimeformat(value):
+    try:
+        return datetime.fromisoformat(value).strftime('%Y-%m-%d %H:%M:%S')
+    except ValueError:
+        return value  # Fallback if formatting fails
+    
 @app.route("/", methods=["GET", "POST"])
 def manual_login():
     if request.method == "POST":
