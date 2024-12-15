@@ -38,12 +38,13 @@ body {
 
 .signup-container input[type="text"],
 .signup-container input[type="password"] {
-    width: 100%;
+    box-sizing: border-box; 
+    width: 100%; 
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #666; 
+    border: 1px solid #666;
     border-radius: 5px;
-    background-color: #555; 
+    background-color: #555;
     color: #fff;
     font-size: 16px;
     transition: border 0.3s ease, background-color 0.3s ease;
