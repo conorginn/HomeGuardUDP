@@ -41,8 +41,7 @@
                 <ul>
                     {% for message in user.messages %}
                         <li>
-                            <button class="message-button" 
-                                    onclick="playMessage('{{ message.file_path }}')">
+                            <button class="message-button">
                                 {{ message.message_name }}
                             </button>
                         </li>
