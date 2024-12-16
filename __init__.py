@@ -110,10 +110,14 @@ def home():
 
     if not user:
         return redirect("/")
-    
-    # Get the newest recording (last one in the list)
+
     recordings = user.get("recordings", [])
-    newest_recording = recordings[-1] if recordings else None
+    if recordings:
+        newest_recording = recordings[-1]
+        timestamp = datetime.fromisoformat(newest_recording["timestamp"].replace("Z", "+00:00"))
+        newest_recording["timestamp"] = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        newest_recording = None
 
     return render_template("home.html", username=username, newest_recording=newest_recording)
 
@@ -255,16 +259,17 @@ def recordings():
     if not user:
         return redirect("/")
 
-    # Extract recordings from the database
     recordings = user.get("recordings", [])
+
+    sorted_recordings = sorted(recordings, key=lambda x: x['timestamp'], reverse=True)
     
-    # Add formatted date for simplicity
     formatted_recordings = []
-    for recording in recordings:
+    for recording in sorted_recordings:
+        timestamp = datetime.fromisoformat(recording["timestamp"].replace("Z", "+00:00"))
         formatted_recordings.append({
             "file_path": recording["file_path"],
-            "timestamp": recording["timestamp"].split("T")[1],  # Extract time
-            "date": recording["timestamp"].split("T")[0]       # Extract date
+            "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),  
+            "date": timestamp.strftime("%Y-%m-%d") 
         })
 
     return render_template("recordings.html", recordings=formatted_recordings)
