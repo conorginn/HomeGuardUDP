@@ -35,30 +35,54 @@ class PubNubCallback(SubscribeCallback):
         user_id = user["user_id"]
         now = datetime.now(timezone.utc)
 
-        # Add a notification
-        notification = {
-            "notification_id": str(ObjectId()),
-            "type": msg.get("event", "info"),
-            "message": msg.get("message"),
-            "timestamp": now.isoformat()
-        }
-        users_collection.update_one(
-            {"user_id": user_id},
-            {"$push": {"notifications": notification}}
-        )
+        # Prevent Duplicate Notifications
+        notification_message = msg.get("message")
+        existing_notification = users_collection.find_one({
+            "user_id": user_id,
+            "notifications": {
+                "$elemMatch": {"message": notification_message, "timestamp": now.isoformat()}
+            }
+        })
 
-        # Add recording info
-        if file_path:
-            recording = {
-                "recording_id": str(ObjectId()),
-                "timestamp": now.isoformat(),
-                "file_path": file_path
+        if not existing_notification:
+            notification = {
+                "notification_id": str(ObjectId()),
+                "type": msg.get("event", "info"),
+                "message": notification_message,
+                "timestamp": now.isoformat()
             }
             users_collection.update_one(
                 {"user_id": user_id},
-                {"$push": {"recordings": recording}}
+                {"$push": {"notifications": notification}}
             )
-            print(f"Recording stored for user: {user['username']}")
+            print("Notification stored successfully.")
+        else:
+            print("Duplicate notification detected. Skipping save.")
+
+        # Prevent Duplicate Recordings
+        if file_path:
+            filename = os.path.basename(file_path)
+            existing_recording = users_collection.find_one({
+                "user_id": user_id,
+                "recordings": {
+                    "$elemMatch": {"file_path": filename, "timestamp": now.isoformat()}
+                }
+            })
+
+            if not existing_recording:
+                recording = {
+                    "recording_id": str(ObjectId()),
+                    "timestamp": now.isoformat(),
+                    "file_path": filename
+                }
+                users_collection.update_one(
+                    {"user_id": user_id},
+                    {"$push": {"recordings": recording}}
+                )
+                print("Recording stored successfully.")
+            else:
+                print("Duplicate recording detected. Skipping save.")
+
 
 pubnub.add_listener(PubNubCallback())
 pubnub.subscribe().channels("motion-detection").execute()
