@@ -12,9 +12,16 @@
 
     
     <div class="live-feed-container">
-        <img class="live-feed" src="https://via.placeholder.com/400x200" alt="Live Feed">
-        <div class="timestamp">12:45</div>
-        <div class="cam-label">CAM 1</div>
+        {% if newest_recording %}
+            <video class="live-feed" src="{{ url_for('static', filename='recordings/' ~ newest_recording.file_path) }}" 
+                   controls muted autoplay></video>
+            <div class="timestamp">{{ newest_recording.timestamp.split('T')[1].split('+')[0] }}</div>
+            <div class="cam-label">Newest Recording</div>
+        {% else %}
+            <img class="live-feed" src="https://via.placeholder.com/400x200" alt="Live Feed">
+            <div class="timestamp">No Recordings Available</div>
+            <div class="cam-label">CAM 1</div>
+        {% endif %}
     </div>
 
     <div class="voice-control">
