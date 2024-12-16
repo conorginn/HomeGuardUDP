@@ -340,6 +340,22 @@ def upload_audio():
     else:
         return jsonify({"success": False, "message": "Invalid file format."}), 400
 
+@app.route("/get_audio_files", methods=["GET"])
+def get_audio_files():
+    username = request.args.get("username")  # Pass username as a query parameter
+
+    if not username:
+        return jsonify({"success": False, "message": "Username is required"}), 400
+
+    # Fetch user from the database
+    user = find_user(username)
+
+    if not user:
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    # Get audio files stored in the user's 'messages' field
+    audio_files = user.get("messages", [])
+    return jsonify({"success": True, "audio_files": audio_files})
 
 # Logout route
 @app.route("/logout", methods=["POST"])
