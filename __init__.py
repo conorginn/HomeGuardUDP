@@ -135,7 +135,9 @@ def home():
     else:
         newest_recording = None
 
-    return render_template("home.html", username=username, newest_recording=newest_recording)
+    messages = user.get("messages", [])
+
+    return render_template("home.html", username=username, newest_recording=newest_recording, messages=messages)
 
 
 # Settings page
