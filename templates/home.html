@@ -24,30 +24,34 @@
         {% endif %}
     </div>
 
-    <!-- Pre-recorded Messages -->
-    <div class="message-section">
-        <h3>Pre-Recorded Messages</h3>
-        {% if user.messages %}
-            <ul class="message-list">
-                {% for message in user.messages %}
-                <li>
-                    <button class="message-button" onclick="playMessage('{{ message.file_path }}')">
-                        {{ message.message_name }}
-                    </button>
-                </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No pre-recorded messages available</p>
-        {% endif %}
-    </div>
-
     <!-- Voice Control Section -->
     <div class="voice-control">
         <button class="mic-button" onclick="toggleMicrophone()">🎤</button>
         <div class="toggle-container">
             <span>Voice Changer</span>
             <div class="toggle"></div>
+        </div>
+        <span class="pre-recorded" onclick="openModal()">Pre-Recorded Messages</span>
+    </div>
+
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <h3>Select a Pre-Recorded Message</h3>
+            {% if user.messages %}
+                <ul>
+                    {% for message in user.messages %}
+                        <li>
+                            <button class="message-button" 
+                                    onclick="playMessage('{{ message.file_path }}')">
+                                {{ message.message_name }}
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No pre-recorded messages available.</p>
+            {% endif %}
+            <button class="close-modal" onclick="closeModal()">Close</button>
         </div>
     </div>
 
