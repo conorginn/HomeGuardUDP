@@ -10,7 +10,7 @@
 <body>
     <header>HomeGuard</header>
 
-    
+    <!-- Live Feed Section -->
     <div class="live-feed-container">
         {% if newest_recording %}
             <video class="live-feed" src="{{ url_for('static', filename='recordings/' ~ newest_recording.file_path) }}" 
@@ -24,6 +24,7 @@
         {% endif %}
     </div>
 
+    <!-- Voice Control Section -->
     <div class="voice-control">
         <button class="mic-button" onclick="toggleMicrophone()">🎤</button>
         <div class="toggle-container">
@@ -54,6 +55,7 @@
         </div>
     </div>
 
+    <!-- Footer Navigation -->
     <div class="footer">
         <a href="/home" class="footer-icon">
             <button>🏠</button>
