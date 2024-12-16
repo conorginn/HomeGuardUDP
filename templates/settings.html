@@ -67,16 +67,35 @@
         </div>
     </div>
 
-    <!-- Pre-recorded Message Modal -->
-    <div class="modal" id="messageModal">
-        <div class="modal-content">
-            <h3>Add Pre-recorded Message</h3>
-            <input type="file" id="audioUpload" accept="audio/*">
-            <p class="file-info" id="fileInfo">No file selected</p>
-            <button onclick="uploadAudio()">Upload</button>
-            <button class="close-modal" onclick="closeModal('messageModal')">Close</button>
-        </div>
+<!-- Pre-recorded Message Modal -->
+<div class="modal" id="messageModal">
+    <div class="modal-content">
+        <h3>Add Pre-recorded Message</h3>
+        <input type="text" id="audioNameInput" placeholder="Enter audio name" required>
+        <input type="file" id="audioUpload" accept="audio/*" required>
+        <p class="file-info" id="fileInfo">No file selected</p>
+        <button onclick="uploadAudio()">Upload</button>
+        <button class="close-modal" onclick="closeModal('messageModal')">Close</button>
     </div>
+</div>
+
+<h3>Your Uploaded Audio Messages</h3>
+{% if user.messages %}
+    <ul>
+        {% for message in user.messages %}
+            <li>
+                <strong>{{ message.audio_name }}</strong> 
+                (Uploaded on: {{ message.timestamp }})
+                <audio controls>
+                    <source src="{{ url_for('static', filename=message.file_path.split('static/')[1]) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No audio messages uploaded yet.</p>
+{% endif %}
 
     <!-- Voice Changer Modal -->
     <div class="modal" id="voiceChangerModal">

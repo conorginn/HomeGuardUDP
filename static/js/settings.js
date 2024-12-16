@@ -70,15 +70,22 @@ function savePassword() {
 
 function uploadAudio() {
     const fileInput = document.getElementById("audioUpload");
+    const audioNameInput = document.getElementById("audioNameInput");
     const file = fileInput.files[0];
+    const audioName = audioNameInput.value.trim();
 
     if (!file) {
         alert("Please select an audio file to upload.");
         return;
     }
+    if (!audioName) {
+        alert("Please enter a name for your audio.");
+        return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("audio_name", audioName); // Include audio name
 
     fetch("/upload_audio", {
         method: "POST",
@@ -88,7 +95,7 @@ function uploadAudio() {
     .then(data => {
         if (data.success) {
             alert("Audio file uploaded successfully!");
-            document.getElementById("fileInfo").textContent = `Uploaded: ${file.name}`;
+            location.reload(); // Refresh to display the updated list
         } else {
             alert(`Error: ${data.message}`);
         }
