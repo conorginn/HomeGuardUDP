@@ -8,6 +8,7 @@ from flask import Flask, session, redirect, request, abort, render_template, jso
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
+from werkzeug.utils import secure_filename
 from db import add_user, find_user, users_collection
 from bson.objectid import ObjectId
 import google.auth.transport.requests
@@ -16,7 +17,23 @@ from datetime import datetime
 app = Flask(__name__)
 
 
+
 app.secret_key = "HOMEGUARD_SECRET_KEY"
+
+# Audio upload configuration
+AUDIO_UPLOAD_FOLDER = os.path.join(app.root_path, "static", "audio")
+ALLOWED_EXTENSIONS = {"mp3", "wav", "ogg", "aac", "m4a"}
+
+# Ensure the upload folder exists
+os.makedirs(AUDIO_UPLOAD_FOLDER, exist_ok=True)
+
+# Configure Flask app
+app.config["UPLOAD_FOLDER"] = AUDIO_UPLOAD_FOLDER
+
+
+# Function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
@@ -286,6 +303,42 @@ def register_device():
     if success:
         return {"success": True, "message": "Device registered successfully!"}
     return {"success": False, "message": "Failed to register device."}
+
+@app.route("/upload_audio", methods=["POST"])
+def upload_audio():
+    if "file" not in request.files or "audio_name" not in request.form:
+        return jsonify({"success": False, "message": "Missing file or audio name."}), 400
+
+    file = request.files["file"]
+    audio_name = request.form["audio_name"].strip()
+    username = session.get("username")
+
+    if not username:
+        return jsonify({"success": False, "message": "User not found."}), 404
+
+    if file and allowed_file(file.filename):
+        try:
+            # Save file with a unique name
+            filename = secure_filename(f"{audio_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(file_path)
+
+            # Update user's messages with audio metadata
+            audio_entry = {
+                "audio_name": audio_name,
+                "file_path": file_path,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            users_collection.update_one(
+                {"username": username},
+                {"$push": {"messages": audio_entry}}
+            )
+            return jsonify({"success": True, "message": "Audio uploaded successfully!"})
+
+        except Exception as e:
+            return jsonify({"success": False, "message": f"Error saving file: {e}"}), 500
+    else:
+        return jsonify({"success": False, "message": "Invalid file format."}), 400
 
 
 # Logout route
