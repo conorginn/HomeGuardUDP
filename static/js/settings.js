@@ -69,41 +69,46 @@ function savePassword() {
 }
 
 function uploadAudio() {
-    const fileInput = document.getElementById("audioUpload");
     const audioNameInput = document.getElementById("audioNameInput");
-    const file = fileInput.files[0];
+    const fileInput = document.getElementById("audioUpload");
+    const fileInfo = document.getElementById("fileInfo");
+
     const audioName = audioNameInput.value.trim();
+    const file = fileInput.files[0];
 
-    if (!file) {
-        alert("Please select an audio file to upload.");
-        return;
-    }
+    // Validation
     if (!audioName) {
-        alert("Please enter a name for your audio.");
+        alert("Please enter a name for the audio.");
+        return;
+    }
+    if (!file) {
+        alert("Please select an audio file.");
         return;
     }
 
+    // Prepare form data
     const formData = new FormData();
+    formData.append("audio_name", audioName);
     formData.append("file", file);
-    formData.append("audio_name", audioName); // Include audio name
 
     fetch("/upload_audio", {
         method: "POST",
-        body: formData
+        body: formData,
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Audio file uploaded successfully!");
-            location.reload(); // Refresh to display the updated list
-        } else {
-            alert(`Error: ${data.message}`);
-        }
-    })
-    .catch(error => {
-        console.error("Error uploading file:", error);
-        alert("An error occurred during file upload.");
-    });
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert("Audio uploaded successfully!");
+                fileInfo.textContent = `Uploaded: ${file.name}`;
+                location.reload(); // Reload to show updated messages
+            } else {
+                alert(data.message || "Failed to upload audio.");
+            }
+        })
+        .catch((error) => {
+            console.error("Error uploading audio:", error);
+            alert("An error occurred while uploading the file.");
+        });
 }
 
 // Save Voice Changer
