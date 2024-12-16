@@ -18,10 +18,6 @@ app = Flask(__name__)
 
 app.secret_key = "HOMEGUARD_SECRET_KEY"
 
-test_user = {
-    "username": "user1",
-    "password": "abc123"
-}
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
@@ -36,10 +32,6 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="https://homeguard.website/callback"
 )
 
-@app.route('/videos/<filename>')
-def get_video(filename):
-    # Ensure the filename is secure
-    return send_from_directory('/home/haroldt2/recordings', filename)
 
 def login_is_required(function):
     def wrapper(*args, **kwargs):
@@ -113,9 +105,17 @@ def callback():
 @app.route("/home")
 @login_is_required
 def home():
-    print("Session data in home route:", dict(session))
     username = session.get("username") or session.get("name")
-    return render_template("home.html", username=username)
+    user = find_user(username)
+
+    if not user:
+        return redirect("/")
+    
+    # Get the newest recording (last one in the list)
+    recordings = user.get("recordings", [])
+    newest_recording = recordings[-1] if recordings else None
+
+    return render_template("home.html", username=username, newest_recording=newest_recording)
 
 
 # Settings page
