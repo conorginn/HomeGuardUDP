@@ -13,10 +13,10 @@
         {% for recording in recordings %}
         <div class="recording-card">
             <div class="thumbnail">
-                <video src="{{ url_for('get_video', filename=recording.filename) }}" muted controls></video>
+                <video src="{{ url_for('static', filename='recordings/' ~ recording.file_path) }}" controls></video>
             </div>
             <div class="recording-details">
-                <span class="timestamp">{{ recording.timestamp | datetimeformat }}</span>
+                <span class="timestamp">{{ recording.timestamp }}</span>
                 <span class="date">{{ recording.date }}</span>
             </div>
         </div>
