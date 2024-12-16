@@ -68,19 +68,35 @@ function savePassword() {
     }
 }
 
-// Handle Audio Upload
 function uploadAudio() {
     const fileInput = document.getElementById("audioUpload");
     const file = fileInput.files[0];
 
-    if (file) {
-        const fileInfo = document.getElementById("fileInfo");
-        fileInfo.textContent = `Selected file: ${file.name}`;
-        alert(`Audio file "${file.name}" uploaded successfully!`);
-    } else {
+    if (!file) {
         alert("Please select an audio file to upload.");
+        return;
     }
-    closeModal("messageModal");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/upload_audio", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Audio file uploaded successfully!");
+            document.getElementById("fileInfo").textContent = `Uploaded: ${file.name}`;
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error("Error uploading file:", error);
+        alert("An error occurred during file upload.");
+    });
 }
 
 // Save Voice Changer

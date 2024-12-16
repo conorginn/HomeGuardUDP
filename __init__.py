@@ -32,7 +32,6 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="https://homeguard.website/callback"
 )
 
-
 def login_is_required(function):
     def wrapper(*args, **kwargs):
         print("Checking session in decorator:", dict(session))
