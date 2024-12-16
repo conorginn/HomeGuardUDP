@@ -36,17 +36,12 @@
     <div class="modal" id="messageModal">
         <div class="modal-content">
             <h3>Select a Message</h3>
-            {% if user.messages %}
-                <ul>
-                    {% for message in user.messages %}
-                        <li>
-                            <span class="message-name">{{ message.audio_name }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No pre-recorded messages available.</p>
-            {% endif %}
+            <ul>
+                <li>Hello, how can I help you?</li>
+                <li>Please leave the package at the door.</li>
+                <li>I’ll be there in a moment.</li>
+                <li>Who is it?</li>
+            </ul>
             <button class="close-modal" onclick="closeModal()">Close</button>
         </div>
     </div>
