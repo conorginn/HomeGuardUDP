@@ -9,23 +9,20 @@
 <body>
     <header>HomeGuard</header>
 
-    <!-- Container for recordings -->
     <div class="recordings-container">
         {% for recording in recordings %}
         <div class="recording-card">
             <div class="thumbnail">
-                <!-- Use the file path for displaying a video thumbnail -->
-                <video src="{{ recording.file_path }}" muted></video>
+                <video src="{{ url_for('get_video', filename=recording.filename) }}" muted controls></video>
             </div>
             <div class="recording-details">
-                <span class="timestamp">{{ recording.timestamp }}</span>
+                <span class="timestamp">{{ recording.timestamp | datetimeformat }}</span>
                 <span class="date">{{ recording.date }}</span>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         <a href="/home" class="footer-icon">
             <button>🏠</button>

@@ -36,6 +36,11 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="https://homeguard.website/callback"
 )
 
+@app.route('/videos/<filename>')
+def get_video(filename):
+    # Ensure the filename is secure
+    return send_from_directory('/home/haroldt2/recordings', filename)
+
 def login_is_required(function):
     def wrapper(*args, **kwargs):
         print("Checking session in decorator:", dict(session))
