@@ -16,7 +16,7 @@
                 <video src="{{ url_for('get_video', filename=recording.filename) }}" muted controls></video>
             </div>
             <div class="recording-details">
-                <span class="timestamp">{{ recording.timestamp }}</span>
+                <span class="timestamp">{{ recording.timestamp | datetimeformat }}</span>
                 <span class="date">{{ recording.date }}</span>
             </div>
         </div>

@@ -28,11 +28,18 @@ header {
     width: 90%;
     max-width: 400px;
     margin-top: 10px;
-    overflow-y: auto;
+    overflow-y: scroll; 
     padding-bottom: 60px;
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
 }
 
-/* Recording Card */
+
+.recordings-container::-webkit-scrollbar {
+    display: none;
+}
+
+
 .recording-card {
     display: flex;
     flex-direction: column;
@@ -49,7 +56,7 @@ header {
     object-fit: cover;
 }
 
-/* Recording Details */
+
 .recording-details {
     display: flex;
     justify-content: space-between;
@@ -68,7 +75,7 @@ header {
     color: #ccc;
 }
 
-/* Footer */
+
 .footer {
     display: flex;
     justify-content: space-around;
