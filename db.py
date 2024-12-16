@@ -15,7 +15,9 @@ def add_user(username, password):
         "password": password,
         "recordings": [],
         "notifications": [],
-        "pubnub_token": None
+        "messages": [],
+        "pubnub_token": None,
+        "devices": []
     }
     return users_collection.insert_one(user)
 
