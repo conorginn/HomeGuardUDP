@@ -293,3 +293,5 @@ def register_device():
 def logout():
     session.clear()  # Clear all session data
     return redirect("/")
+
+    
